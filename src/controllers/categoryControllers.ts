@@ -1,17 +1,14 @@
-import { Request, Response } from 'express';
-import { client } from '../config/database';
+import { Request, Response, Router } from 'express';
 import { Category } from '../models/Category';
 
-const db = client.db(process.env.DB_NAME);
-const categoriesCollection = db.collection<Category>('Categories');
+const router = Router();
 
 export const getCategories = async (req: Request, res: Response) => {
-    try {
-      const categories = await categoriesCollection.find({}).toArray();
-      res.status(200).json(categories);
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      console.error('Errore nel recupero delle categorie:', errorMessage);
-      res.status(500).json({ error: 'Errore nel recupero delle categorie dal database'});
-    }
-  };
+  try {
+    const categories = await Category.find()
+    if(categories.length == 0) throw new Error('Nessuna categoria presente')
+    res.status(201).json(categories)
+  } catch(err) {
+    res.status(404).json(err instanceof Error ? {err: err.message} : {err})
+  }
+}

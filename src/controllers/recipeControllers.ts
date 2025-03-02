@@ -1,22 +1,14 @@
-import { Request, Response } from 'express';
-import { client } from '../config/database';
+import { Request, Response, Router } from 'express';
 import { Recipe } from '../models/Recipe';
 
-const db = client.db(process.env.DB_NAME);
-const recipesCollection = db.collection<Recipe>('Recipe');
+const router = Router();
 
 export const getRecipes = async (req: Request, res: Response) => {
   try {
-    let recipes: Recipe[] = []
-    if(req.query.categoryMeal) {
-      recipes = await recipesCollection.find({categoryMeal: req.query.categoryMeal}).toArray()
-    } else {
-      recipes = await recipesCollection.find({}).toArray()
-    }
-    res.status(200).json(recipes);
-  } catch(error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('Errore nel recupero delle ricette:', errorMessage);
-    res.status(500).json({ error: 'Errore nel recupero delle ricette dal database' });
+    const recipes = await Recipe.find()
+    if(recipes.length == 0) throw new Error('Nessuna ricetta presente')
+    res.status(201).json(recipes)
+  } catch(err) {
+    res.status(404).json(err instanceof Error ? {err: err.message} : {err})
   }
-};
+}
