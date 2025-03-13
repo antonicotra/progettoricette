@@ -1,7 +1,7 @@
-<main class="flex flex-col items-center px-4 py-6 bg-gray-50 lg:max-w-3xl mx-auto">
+<main class="flex flex-col items-center px-4 py-6 bg-gray-50 w-full">
     @if (recipe) {
         <h2 class="text-3xl font-bold mb-6">{{recipe.nameMeal}}</h2>
-        <img [src]="recipe.imgMeal" [alt]="recipe.nameMeal" class="object-cover rounded-xl md:max-h-100 mb-8">
+        <img [src]="recipe.imgMeal" [alt]="recipe.nameMeal" class="object-cover rounded-xl md:max-h-100 md:min-w-[401.66px] mb-8">
         <app-instruction-card [instruction]="recipe.instruction"></app-instruction-card>
     } @else {
         <h2 class="text-center text-xl font-bold text-gray-500 py-10">Nessuna ricetta selezionata</h2>

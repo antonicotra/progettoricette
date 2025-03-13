@@ -2,7 +2,7 @@ import { Component, effect, HostListener, inject, signal } from '@angular/core';
 import { RecipecardComponent } from './recipecard/recipecard.component';
 import { RecipeService } from '../../../../services/recipe.service';
 import { Recipe } from './../../../../models/recipe.model';
-import { CategoryFilterService } from '../../../../services/categoryfilter.service';
+import { CategorySelectedService } from '../../../../services/categoryselected.service';
 
 @Component({
   selector: 'app-recipesbox',
@@ -13,7 +13,7 @@ import { CategoryFilterService } from '../../../../services/categoryfilter.servi
 export class RecipesboxComponent {
 
   private readonly recipesService = inject(RecipeService);
-  private readonly categoryFilterService = inject(CategoryFilterService);
+  private readonly categorySelectedService = inject(CategorySelectedService);
   public recipes = signal<Recipe[]>([]);
   public currentPage = signal(0);
   public isLoading = signal(false);
@@ -22,10 +22,9 @@ export class RecipesboxComponent {
 
   constructor() {
     effect(() => {
-      const selectedCategory = this.categoryFilterService.selectedCategory();
+      const selectedCategory = this.categorySelectedService.selectedCategory();
       if (selectedCategory !== this.currentCategory()) {
         this.currentCategory.set(selectedCategory!);
-        
         this.recipes.set([]);
         this.currentPage.set(0);
         this.hasMoreData.set(true);
@@ -35,6 +34,7 @@ export class RecipesboxComponent {
   }
 
   public ngOnInit(): void {
+    this.currentCategory.set(this.categorySelectedService.selectedCategory())
     this.loadRecipes();
   }
 

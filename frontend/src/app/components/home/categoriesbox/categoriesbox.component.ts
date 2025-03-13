@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CategorybuttonComponent } from './categorybutton/categorybutton.component';
 import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/category.model';
-import { CategoryFilterService } from '../../../services/categoryfilter.service';
+import { CategorySelectedService } from '../../../services/categoryselected.service';
 
 @Component({
   selector: 'app-categoriesbox',
@@ -14,15 +14,21 @@ import { CategoryFilterService } from '../../../services/categoryfilter.service'
 export class CategoriesboxComponent {
 
   private readonly categoriesService = inject(CategoryService)
-  private readonly categoryfilterService = inject(CategoryFilterService);
+  private readonly categoryselectedService = inject(CategorySelectedService);
   public categories: Category[] = []
   public isLoading: boolean = true
 
   public ngOnInit(): void {
     this.categoriesService.getCategories().subscribe((categories: Category[]) => {
       this.categories = categories
-      this.categories[0].isActive = true
-      this.categoryfilterService.setSelectedCategory(categories[0].categoryName)
+      const savedCategory = this.categoryselectedService.selectedCategory();
+      const activeCategory = categories.find(cat => cat.categoryName === savedCategory);
+      if (activeCategory) {
+        activeCategory.isActive = true;
+      } else if (categories.length > 0) {
+        categories[0].isActive = true;
+        this.categoryselectedService.setSelectedCategory(categories[0].categoryName);
+      }
       this.isLoading = false;
     })
   }
@@ -37,7 +43,8 @@ export class CategoriesboxComponent {
       }
     });
     category.isActive = true
-    this.categoryfilterService.setSelectedCategory(category.categoryName)
+    this.categoryselectedService.setSelectedCategory(category.categoryName)
+    console.log(this.categoryselectedService.selectedCategory())
   }
 
 }
