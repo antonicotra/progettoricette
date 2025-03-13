@@ -1,0 +1,12 @@
+<a [routerLink]="['/detail']" [state]="{ recipe: recipe }" class="block bg-white rounded-lg overflow-hidden">
+    <img [src]="recipe.imgMeal" [alt]="recipe.nameMeal" class="w-full object-cover h-[408.8px]">
+    <div class="p-4">
+        <h3 class="font-medium text-gray-800 mb-2 line-clamp-1">{{recipe.nameMeal}}</h3>
+        <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-md bg-black text-xs font-medium text-white">{{recipe.nationMeal}}</span>
+            @for (category of recipe.categoryMeal; track recipe._id) {
+                <span class="px-3 py-1 rounded-md bg-gray-100 text-xs font-medium text-gray-600 truncate">{{category}}</span>
+            }
+        </div>
+    </div>
+</a>

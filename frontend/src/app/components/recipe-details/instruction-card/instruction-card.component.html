@@ -1,0 +1,13 @@
+<div class="bg-white rounded-xl shadow-sm p-4">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Instruction</h2>
+    <ol>
+    @for (step of instruction; track $index) {
+        <li class="flex mt-6">
+            <div class="mr-4">
+                <div class="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 text-black font-semibold">{{$index}}</div>
+            </div>
+            <p class="text-gray-700 text-pretty">{{step}}</p>
+        </li>    
+    }
+    </ol>
+</div>

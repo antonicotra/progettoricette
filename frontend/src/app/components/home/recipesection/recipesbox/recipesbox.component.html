@@ -1,0 +1,15 @@
+<div class="flex flex-wrap">
+    @for (recipe of recipes(); track recipe._id) {
+      <div class="w-full md:w-1/2 lg:w-1/3 p-2">
+        <app-recipecard [recipe]="recipe"></app-recipecard>
+      </div>
+    }
+    
+    <div id="observerTarget" class="w-full p-4 flex justify-center">
+      @if (isLoading()) {
+        <div class="w-12 h-12 border-2 border-black border-t-white rounded-full animate-spin"></div>
+      } @else  {
+        <p class="text-gray-500 font-bold">There are no more recipes to upload</p>
+      }
+    </div>
+</div>
