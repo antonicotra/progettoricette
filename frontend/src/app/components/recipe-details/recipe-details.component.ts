@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { Recipe } from '../../models/recipe.model';
 import {Router, ActivatedRoute } from '@angular/router';
 import { InstructionCardComponent } from './instruction-card/instruction-card.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-recipe-details',
-  imports: [InstructionCardComponent],
+  imports: [InstructionCardComponent, RouterLink],
   templateUrl: './recipe-details.component.html',
   styleUrl: './recipe-details.component.css'
 })
