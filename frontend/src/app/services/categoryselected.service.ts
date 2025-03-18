@@ -12,6 +12,7 @@ export class CategorySelectedService {
   constructor() {
     effect(() => {
       localStorage.setItem('selectedCategory', this.selectedCategory());
+
     });
   }
 
