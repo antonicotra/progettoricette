@@ -3,7 +3,6 @@ import { CategorybuttonComponent } from './categorybutton/categorybutton.compone
 import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/category.model';
 import { CategorySelectedService } from '../../../services/categoryselected.service';
-import { RecipeService } from '../../../services/recipe.service';
 
 @Component({
   selector: 'app-categoriesbox',
@@ -16,7 +15,6 @@ export class CategoriesboxComponent {
 
   private readonly categoriesService = inject(CategoryService)
   private readonly categoryselectedService = inject(CategorySelectedService);
-  private readonly recipeService = inject(RecipeService);
   public categories: Category[] = []
   public isLoading: boolean = true
 
@@ -24,12 +22,13 @@ export class CategoriesboxComponent {
     this.categoriesService.getCategories().subscribe((categories: Category[]) => {
       this.categories = categories
       const savedCategory = this.categoryselectedService.selectedCategory();
+      console.log(savedCategory)
       const activeCategory = categories.find(cat => cat.categoryName === savedCategory);
       if (activeCategory) {
         activeCategory.isActive = true;
       } else if (categories.length > 0) {
         categories[0].isActive = true;
-        this.categoryselectedService.setSelectedCategory(categories[0].categoryName);
+        this.categoryselectedService.setSelectedCategory(savedCategory);
       }
       this.isLoading = false;
     })

@@ -22,10 +22,18 @@ export class RecipesboxComponent {
   private lastMealName = signal<string | null>(null);
   private searchByName = signal<boolean>(false);
 
+  ngOnInit() {
+    localStorage.removeItem('name')
+  }
+  
   constructor() {
 
-    if(this.lastMealName() != "") {
-      //Logica che triggera il primo effect
+    const storedMealName = localStorage.getItem('name');
+    if (storedMealName) {
+      this.lastMealName.set(storedMealName);
+      this.recipesService.setNameMeal(storedMealName);
+      this.searchByName.set(true);
+      this.resetAndLoadByName(storedMealName);
     }
 
     effect(() => {
