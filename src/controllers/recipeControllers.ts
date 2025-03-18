@@ -1,13 +1,14 @@
 import { Request, Response, Router } from 'express';
 import { Recipe } from '../models/Recipe';
 
-const router = Router();
-
 export const getRecipes = async (req: Request, res: Response) => {
-  const { page = '0', category } = req.query;
+  const { page = '0', category, name } = req.query;
   const recipesPerPage = 3
   try {
-    const query = category ? {categoryMeal: category} : {}
+    let query = {}
+
+    if(category) query = {categoryMeal: category}
+    if(name) query = {nameMeal: name}
     const recipes = await Recipe.find(query).skip(Number(page) * recipesPerPage).limit(recipesPerPage)
     res.status(201).json(recipes)
   } catch(err) {

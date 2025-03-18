@@ -15,7 +15,7 @@ export class RecipeDetailsComponent {
 
   recipe?: Recipe;
   
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(private router: Router) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state) {
       this.recipe = navigation.extras.state['recipe'];

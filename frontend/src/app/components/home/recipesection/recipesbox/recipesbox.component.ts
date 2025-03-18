@@ -1,4 +1,4 @@
-import { Component, effect, HostListener, inject, signal } from '@angular/core';
+import { Component, effect, HostListener, inject, signal, untracked } from '@angular/core';
 import { RecipecardComponent } from './recipecard/recipecard.component';
 import { RecipeService } from '../../../../services/recipe.service';
 import { Recipe } from './../../../../models/recipe.model';
@@ -18,34 +18,76 @@ export class RecipesboxComponent {
   public currentPage = signal(0);
   public isLoading = signal(false);
   public hasMoreData = signal(true);
-  public currentCategory = signal<string | null>(null);
+  private lastCategory = signal<string | null>(null);
+  private lastMealName = signal<string | null>(null);
+  private searchByName = signal<boolean>(false);
 
   constructor() {
+
+    if(this.lastMealName() != "") {
+      //Logica che triggera il primo effect
+    }
+
     effect(() => {
-      const selectedCategory = this.categorySelectedService.selectedCategory();
-      if (selectedCategory !== this.currentCategory()) {
-        this.currentCategory.set(selectedCategory!);
-        this.recipes.set([]);
-        this.currentPage.set(0);
-        this.hasMoreData.set(true);
-        this.loadRecipes();
+      const category = this.categorySelectedService.selectedCategory();
+      
+      if (this.lastCategory() !== null && category !== this.lastCategory()) {
+        untracked(() => {
+          if(this.searchByName()) {
+            this.recipesService.setNameMeal('');
+            this.searchByName.set(false);
+          }
+          this.resetAndLoadByCategory(category);
+        });
+      } else if (this.lastCategory() === null) {
+        untracked(() => {
+          this.resetAndLoadByCategory(category);
+        });
       }
+      this.lastCategory.set(category);
+    });
+    
+    effect(() => {
+      const mealName = this.recipesService.nameMeal();
+      
+      if (mealName !== this.lastMealName()) {
+        untracked(() => {
+          if (mealName && mealName.trim() !== '') {
+            this.searchByName.set(true);
+            this.resetAndLoadByName(mealName);
+          } else if (this.lastMealName() && this.lastMealName()!.trim() !== '') {
+            this.searchByName.set(false);
+            const category = this.categorySelectedService.selectedCategory();
+            this.resetAndLoadByCategory(category);
+          }
+        });
+      }
+      this.lastMealName.set(mealName);
     });
   }
 
-  public ngOnInit(): void {
-    this.currentCategory.set(this.categorySelectedService.selectedCategory())
-    this.loadRecipes();
+  private resetAndLoadByCategory(category: string): void {
+    this.recipes.set([]);
+    this.currentPage.set(0);
+    this.hasMoreData.set(true);
+    this.loadRecipesWithCategory(category);
+  }
+  
+  private resetAndLoadByName(name: string): void {
+    this.recipes.set([]);
+    this.currentPage.set(0);
+    this.hasMoreData.set(true);
+    this.loadRecipesFilteredByName(name);
   }
 
-  public loadRecipes(): void {
-    if(this.isLoading() || !this.hasMoreData()) return;
+  private loadRecipesWithCategory(category: string): void {
+    if (this.isLoading() || !this.hasMoreData()) return;
     
     this.isLoading.set(true);
     
-    this.recipesService.getRecipes(Number(this.currentPage()), this.currentCategory() || undefined).subscribe({
+    this.recipesService.getRecipes(Number(this.currentPage()), category).subscribe({
       next: (newRecipes) => {
-        if(newRecipes.length === 0) {
+        if (newRecipes.length === 0) {
           this.hasMoreData.set(false);
         } else {
           this.recipes.update(recipes => [...recipes, ...newRecipes]);
@@ -54,6 +96,35 @@ export class RecipesboxComponent {
         this.isLoading.set(false);
       }
     });
+  }
+
+  private loadRecipesFilteredByName(name: string): void {
+    if (this.isLoading() || !this.hasMoreData()) return;
+    
+    this.isLoading.set(true);
+    
+    this.recipesService.getRecipesFiltered(Number(this.currentPage()), name).subscribe({
+      next: (newRecipes) => {
+        if (newRecipes.length === 0) {
+          this.hasMoreData.set(false);
+        } else {
+          this.recipes.update(recipes => [...recipes, ...newRecipes]);
+          this.currentPage.update(page => page + 1);
+        }
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  public loadRecipes(): void {
+    
+    if (this.searchByName()) {
+      const name = this.recipesService.nameMeal();
+      this.loadRecipesFilteredByName(name);
+    } else {
+      const category = this.categorySelectedService.selectedCategory();
+      this.loadRecipesWithCategory(category);
+    }
   }
 
   @HostListener('window:scroll',[])
