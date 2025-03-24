@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import {InferSchemaType} from 'mongoose'
 const Schema = mongoose.Schema
 
 const recipeSchema = new Schema({
@@ -10,5 +10,7 @@ const recipeSchema = new Schema({
   imgMeal: {type: String, required: true}
 })
 
-
 export const Recipe = mongoose.model("recipes", recipeSchema)
+
+
+export type recipeType = InferSchemaType<typeof recipeSchema>

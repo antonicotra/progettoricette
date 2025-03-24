@@ -1,31 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
-import { query, ValidationChain, validationResult} from 'express-validator';
+import { matchedData } from 'express-validator';
+import { Recipe } from '../models/Recipe';
+import { FilterQuery } from 'mongoose';
+import { Query } from '../types/RecipeQuery';
 
-export const getRecipes = async (req: Request, res: Response, next: NextFunction) => {
+export const getRecipes = async (req: Request, res: Response) => {
 
-  const middleware: ValidationChain[] = [
-    query('page')
-    .default(0)
-    .isInt({ min: 0 })
-    .withMessage('Page must be a non-negative integer'),
+  const {page,category, name} = matchedData(req)
+  const RECIPES_PER_PAGE = 3
 
-    query('category')
-    .optional()
-    .isString()
-    .withMessage('Category must be a string')
-    .trim(),
-
-    query('name')
-    .optional()
-    .isString()
-    .withMessage('Name must be a string')
-    .trim()
-  ]
-
-  await Promise.all(middleware.map(mid => mid.run(req)))
-
-  const errors = validationResult(req)
-
-  if(!errors.isEmpty()) res.status(400).json(errors.array().map(err => ({message: err.msg})))
-  else next()
+  try {
+      let query: FilterQuery<Query> = {}
+      if(category) query.categoryMeal = category
+      else if(name) query.nameMeal = { $regex: name, $options: 'i' }
+      const recipes = await Recipe.find(query).skip(Number(page) * RECIPES_PER_PAGE).limit(RECIPES_PER_PAGE)
+      res.status(201).json(recipes)
+    } catch(err) {
+      res.status(404).json(err instanceof Error ? {err: err.message} : {err})
+    }
 }

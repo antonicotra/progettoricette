@@ -6,6 +6,7 @@ import { Recipe } from '../models/recipe.model';
 @Injectable({
   providedIn: 'root'
 })
+
 export class RecipeService {
   private readonly http: HttpClient = inject(HttpClient);
   private baseUrl = "http://localhost:3000/recipes";
@@ -15,15 +16,10 @@ export class RecipeService {
     );
 
   public nameMeal = this.nameMealSignal.asReadonly();
-
-  constructor() {
-    effect(() => {
-      localStorage.setItem('name', this.nameMeal());
-    });
-  }
   
   setNameMeal(name: string) {
-    this.nameMealSignal.set(name);
+      this.nameMealSignal.set(name);
+      localStorage.setItem('name', this.nameMeal());
   }
   
   public getRecipes(page: number, category?: string): Observable<Recipe[]> {

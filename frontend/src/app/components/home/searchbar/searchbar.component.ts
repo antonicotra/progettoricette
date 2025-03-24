@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { RecipeService } from '../../../services/recipe.service';
+import { CategorySelectedService } from '../../../services/categoryselected.service';
 
 @Component({
   selector: 'app-searchbar',
@@ -12,6 +13,7 @@ import { RecipeService } from '../../../services/recipe.service';
 export class SearchbarComponent {
   recipeForm: FormGroup;
   private readonly recipesService = inject(RecipeService);
+  private readonly categoryselectedService = inject(CategorySelectedService);
 
   constructor(private fb: FormBuilder) {
     this.recipeForm = this.fb.group({

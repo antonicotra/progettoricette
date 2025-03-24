@@ -1,9 +1,8 @@
 import { Request, Response, Router } from 'express';
 import { Category } from '../models/Category';
 
-const router = Router();
 
-export const getCategories = async (req: Request, res: Response) => {
+export const getCategories = async (_: Request,res: Response) => {
   try {
     const categories = await Category.find()
     if(categories.length == 0) {
