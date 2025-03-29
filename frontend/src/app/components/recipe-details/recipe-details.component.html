@@ -8,6 +8,7 @@
         <img [src]="recipe.imgMeal" [alt]="recipe.nameMeal" class="object-cover rounded-xl md:max-h-100 md:min-w-[500px] mb-8">
         <app-instruction-card [instruction]="recipe.instruction"></app-instruction-card>
     } @else {
-        <h2 class="text-center text-xl font-bold text-gray-500 py-10">Nessuna ricetta selezionata</h2>
+        <h2 class="text-center text-xl font-bold text-gray-500 py-5">No recipe selected</h2>
+        <button (click)="goBack()" class="flex items-center justify-center px-5 py-3 mt-5 bg-black text-white font-medium rounded-lg">Go Back</button>
     }
 </main>

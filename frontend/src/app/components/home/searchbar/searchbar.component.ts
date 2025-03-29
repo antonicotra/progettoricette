@@ -13,7 +13,6 @@ import { CategorySelectedService } from '../../../services/categoryselected.serv
 export class SearchbarComponent {
   recipeForm: FormGroup;
   private readonly recipesService = inject(RecipeService);
-  private readonly categoryselectedService = inject(CategorySelectedService);
 
   constructor(private fb: FormBuilder) {
     this.recipeForm = this.fb.group({
