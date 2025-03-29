@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import {Request, Response } from 'express';
 import { matchedData } from 'express-validator';
 import { Recipe } from '../models/Recipe';
 import { FilterQuery } from 'mongoose';

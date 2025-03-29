@@ -3,12 +3,14 @@ import mongoose from 'mongoose';
 import cors from 'cors'
 import recipeRoutes from './routes/recipeRoutes'
 import categoryRoutes from './routes/categoryRoutes'
+import authRoutes from './routes/authRoutes';
 
 const app = express();
 
 
 app.use(express.json());
 app.use(cors({origin: 'http://localhost:4200'}));
+app.use('/auth', authRoutes);
 app.use('/recipes', recipeRoutes);
 app.use('/categories', categoryRoutes);
 
