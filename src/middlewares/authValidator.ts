@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { body, query, ValidationChain, validationResult } from 'express-validator';
 import { emailExistCustom, usernameExistCustom } from './customvalidator/userExist';
 import { User } from '../models/User';
+import jwt from 'jsonwebtoken'
+import { UserPayload } from '../types/jwt';
 
 export const validateSignup = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -36,14 +38,17 @@ export const validateEmail = async (req: Request, res: Response, next: NextFunct
     const middleware: ValidationChain[] = [
         query('token')
         .notEmpty().withMessage('Token required!')
-        .isUUID(4).withMessage('Token format not valid!')
     ]
 
     await Promise.all(middleware.map(mid => mid.run(req)))
     const errors = validationResult(req)
 
     try {
-        const user = await User.findOne({ validateEmailToken: req.query.token});
+        const decoded = jwt.verify(req.query.token as string, process.env.JWT_KEY!) as UserPayload
+        const user = await User.findOne({
+            _id: decoded.userId,
+            username: decoded.username,
+        });
         if(!user) throw new Error('Invalid token!');
         if(user.emailActive) throw new Error('Email already verified')
         res.locals.user = user;

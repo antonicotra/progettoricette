@@ -2,9 +2,10 @@ import { Router } from 'express';
 import { validateEmail, validateSignup } from '../middlewares/authValidator';
 import bcrypt  from 'bcrypt';
 import { User, userType } from '../models/User';
-import { v4 as uuidv4 } from 'uuid';
 import { sendVerificationEmail } from '../services/emailServices';
 import { HydratedDocument } from 'mongoose';
+import jwt from 'jsonwebtoken'
+import 'dotenv/config'
 
 const router = Router();
 
@@ -17,10 +18,10 @@ router.post("/signup",validateSignup, async (req, res) => {
             email,
             password: hashPassword,
             username,
-            validateEmailToken: uuidv4(),
         });
         await user.save();
-        await sendVerificationEmail(email, username, user.validateEmailToken!)
+        const token = jwt.sign({userId: user._id, username: user.username}, process.env.JWT_KEY!, { expiresIn: '1h' })
+        await sendVerificationEmail(email, username, token)
         res.status(201).json({id: user._id,username: user.username, email: user.email}) 
     } catch(err) {
         res.status(404).send(err)
@@ -31,7 +32,6 @@ router.get("/verify-email", validateEmail, async (_, res) => {
     try {
         const user = res.locals.user as HydratedDocument<userType>;
         user.emailActive = true;
-        user.validateEmailToken = undefined;
         await user.save();
         res.status(200).json({message: "Email successfully verified!"})
     } catch(err) {
