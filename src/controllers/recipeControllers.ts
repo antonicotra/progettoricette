@@ -14,7 +14,7 @@ export const getRecipes = async (req: Request, res: Response) => {
       if(category) query.categoryMeal = category
       else if(name) query.nameMeal = { $regex: name, $options: 'i' }
       const recipes = await Recipe.find(query).skip(Number(page) * RECIPES_PER_PAGE).limit(RECIPES_PER_PAGE)
-      res.status(201).json(recipes)
+      res.status(200).json({accessToken: res.locals.accessToken,recipes})
     } catch(err) {
       res.status(404).json(err instanceof Error ? {err: err.message} : {err})
     }

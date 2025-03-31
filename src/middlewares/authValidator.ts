@@ -22,10 +22,11 @@ export const validateSignup = async (req: Request, res: Response, next: NextFunc
     const errors = validationResult(req)
 
     try {
-        emailExistCustom
-        usernameExistCustom
+        await emailExistCustom(req.body.email)
+        await usernameExistCustom(req.body.username)
     } catch(err) {
-        res.status(409).json({message: err})
+        console.log(err)
+        res.status(409).json(err instanceof Error ? {message: err.message} : {message: "Unknow error"})
         return
     }
     
@@ -44,14 +45,14 @@ export const validateEmail = async (req: Request, res: Response, next: NextFunct
     const errors = validationResult(req)
 
     try {
-        const decoded = jwt.verify(req.query.token as string, process.env.JWT_KEY!) as UserPayload
+        const decoded = jwt.verify(req.query.token as string, process.env.JWT_VERIFY_KEY!) as UserPayload
         const user = await User.findOne({
             _id: decoded.userId,
             username: decoded.username,
         });
         if(!user) throw new Error('Invalid token!');
         if(user.emailActive) throw new Error('Email already verified')
-        res.locals.user = user;
+        res.locals.user = user; // @types/express
     } catch(err) {
         res.status(401).json({message: err})
         return
@@ -81,6 +82,17 @@ export const validateLogin = async (req: Request, res: Response, next: NextFunct
 
     try {
         const {email, password} = req.body //METTERE MATCHED()
+        const authHeader = req.headers['authorization'];
+        const accessToken = authHeader && authHeader.split(' ')[1];
+
+        if(accessToken) {
+            jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN_KEY!, async (err) => {
+                if(!err) {
+                    res.status(401).json({message: "Unauthorized"})
+                    return
+                }
+            })
+        }
 
         const user = await User.findOne({email})
         if(!user) {
@@ -96,6 +108,6 @@ export const validateLogin = async (req: Request, res: Response, next: NextFunct
         res.locals.user = user;
         next()
     } catch(err) {
-        res.status(500).json({ message: 'Server error during login verification' });
+        res.status(500).json({message: 'Server error during login verification'});
     }
 }

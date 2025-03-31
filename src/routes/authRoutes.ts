@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import { validateEmail, validateLogin, validateSignup } from '../middlewares/authValidator';
-import bcrypt  from 'bcrypt';
 import { User, userType } from '../models/User';
 import { sendVerificationEmail } from '../services/emailServices';
 import { HydratedDocument } from 'mongoose';
-import jwt from 'jsonwebtoken'
 import 'dotenv/config'
+import { createAccessToken, createRefreshToken, createValidateToken, hashPassword } from '../utils/auth';
 
 const router = Router();
 
@@ -13,14 +12,14 @@ const router = Router();
 router.post("/signup",validateSignup, async (req, res) => {
     try {
         const {email, password, username} = req.body
-        const hashPassword = await bcrypt.hash(password, 10)
+        const hashedPassword = await hashPassword(password)
         const user = await User.create({
             email,
-            password: hashPassword,
+            password: hashedPassword,
             username,
         });
         await user.save();
-        const token = jwt.sign({userId: user._id, username: user.username}, process.env.JWT_VERIFY_KEY!, { expiresIn: '1h' })
+        const token = await createValidateToken({userId: String(user._id), username: user.username})
         await sendVerificationEmail(email, username, token)
         res.status(201).json({id: user._id,username: user.username, email: user.email}) 
     } catch(err) {
@@ -40,11 +39,12 @@ router.get("/verify-email", validateEmail, async (_, res) => {
 })
 
 router.post("/login", validateLogin, async (_, res) => {
-    const user = res.locals.user;
-    const accessToken = jwt.sign({id: user._id, email: user.email}, process.env.JWT_ACCES_TOKEN_KEY!, {expiresIn: '15m'})
-    const refreshToken = jwt.sign({id: user._id, email: user.email}, process.env.JWT_REFRESH_TOKEN_KEY!, {expiresIn: '7d'})
-
+    const user: HydratedDocument<userType> = res.locals.user
+    const accessToken = await createAccessToken({userId: String(user._id), username: user.username})
+    const refreshToken = await createRefreshToken({userId: String(user._id), username: user.username})
+    
     user.refreshToken = refreshToken;
+    console.log(user)
     await user.save();
 
     res.cookie('refreshToken', refreshToken, {
@@ -57,3 +57,4 @@ router.post("/login", validateLogin, async (_, res) => {
 })
 
 export default router;
+
