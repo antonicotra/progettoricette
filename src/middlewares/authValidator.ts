@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { body, query, ValidationChain, validationResult } from 'express-validator';
+import { body, matchedData, query, ValidationChain, validationResult } from 'express-validator';
 import { emailExistCustom, usernameExistCustom } from './customvalidator/userExist';
 import { User } from '../models/User';
 import jwt from 'jsonwebtoken'
@@ -52,7 +52,7 @@ export const validateEmail = async (req: Request, res: Response, next: NextFunct
         });
         if(!user) throw new Error('Invalid token!');
         if(user.emailActive) throw new Error('Email already verified')
-        res.locals.user = user; // @types/express
+        res.locals.user = user;
     } catch(err) {
         res.status(401).json({message: err})
         return
@@ -67,9 +67,9 @@ export const validateLogin = async (req: Request, res: Response, next: NextFunct
     
     const middleware: ValidationChain[] = [
         body('email')
-          .isEmail().withMessage('Email must be valid'),
+          .isEmail().withMessage('Email must be valid!'),
         body('password').trim()
-        .notEmpty().withMessage('You must supply a password')
+        .notEmpty().withMessage('You must supply a password!')
     ]
 
     await Promise.all(middleware.map(mid => mid.run(req)))
@@ -81,7 +81,7 @@ export const validateLogin = async (req: Request, res: Response, next: NextFunct
     }
 
     try {
-        const {email, password} = req.body //METTERE MATCHED()
+        const {email, password} = matchedData(req);
         const authHeader = req.headers['authorization'];
         const accessToken = authHeader && authHeader.split(' ')[1];
 

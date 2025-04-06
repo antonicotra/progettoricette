@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { validateEmail, validateLogin, validateSignup } from '../middlewares/authValidator';
 import { User, userType } from '../models/User';
-import { sendVerificationEmail } from '../services/emailServices';
+import { sendResetEmail, sendVerificationEmail } from '../services/emailServices';
 import { HydratedDocument } from 'mongoose';
 import 'dotenv/config'
 import { createAccessToken, createRefreshToken, createValidateToken, hashPassword } from '../utils/auth';
+import { body, matchedData, query, validationResult } from 'express-validator';
 
 const router = Router();
 
@@ -44,7 +45,6 @@ router.post("/login", validateLogin, async (_, res) => {
     const refreshToken = await createRefreshToken({userId: String(user._id), username: user.username})
     
     user.refreshToken = refreshToken;
-    console.log(user)
     await user.save();
 
     res.cookie('refreshToken', refreshToken, {
@@ -55,6 +55,53 @@ router.post("/login", validateLogin, async (_, res) => {
 
     res.status(200).json({accessToken})
 })
+
+router.post("/send-reset-email", async (req, res) => {
+
+    await body('email')
+    .notEmpty().withMessage('Email is required')
+    .isEmail().withMessage('Email must be valid!')
+    .trim()
+    .run(req)
+
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()) {
+        res.status(400).json(errors.array().map(err => ({message: err.msg})))
+        return
+    }
+
+    const {email} = matchedData(req)
+    const user = await User.findOne({email})
+
+    if(user) {
+        const token = await createValidateToken({userId: String(user._id), username: user.username})
+        await sendResetEmail(email, user.username,token)
+    }
+    res.status(200).json({ message: "If the account exists, an email with password reset instructions has been sent."});
+
+})
+
+router.post("/reset-password", async (req, res) => {
+    
+    //INSERIRE IL CAMPO PASSWORD E CONFERMA PASSWORD CHE MI VERRA' INVIATO TRAMITE BODY
+    await query('resetToken')
+    .notEmpty().withMessage('Token is required')
+    .run(req)
+
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()) {
+        res.status(400).json(errors.array().map(err => ({message: err.msg})))
+        return
+    }
+
+    //VERIFICO CHE IL JWT E' ANCORA VALIDO
+
+
+})
+
+
 
 export default router;
 

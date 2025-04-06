@@ -7,13 +7,13 @@ import { Query } from '../types/RecipeQuery';
 export const getRecipes = async (req: Request, res: Response) => {
 
   const {page,category, name} = matchedData(req)
-  const RECIPES_PER_PAGE = 3
+  let recipesPerPage = page ? 3 : 0
 
   try {
       let query: FilterQuery<Query> = {}
       if(category) query.categoryMeal = category
       else if(name) query.nameMeal = { $regex: name, $options: 'i' }
-      const recipes = await Recipe.find(query).skip(Number(page) * RECIPES_PER_PAGE).limit(RECIPES_PER_PAGE)
+      const recipes = await Recipe.find(query).skip(Number(page) * recipesPerPage).limit(recipesPerPage)
       res.status(200).json({accessToken: res.locals.accessToken,recipes})
     } catch(err) {
       res.status(404).json(err instanceof Error ? {err: err.message} : {err})
