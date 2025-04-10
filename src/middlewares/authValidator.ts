@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { body, matchedData, query, ValidationChain, validationResult } from 'express-validator';
-import { emailExistCustom, usernameExistCustom } from './customvalidator/userExist';
+import { emailExistCustom } from './customvalidator/userExist';
 import { User } from '../models/User';
 import jwt from 'jsonwebtoken'
 import { UserPayload } from '../types/jwt';
@@ -23,9 +23,7 @@ export const validateSignup = async (req: Request, res: Response, next: NextFunc
 
     try {
         await emailExistCustom(req.body.email)
-        await usernameExistCustom(req.body.username)
     } catch(err) {
-        console.log(err)
         res.status(409).json(err instanceof Error ? {message: err.message} : {message: "Unknow error"})
         return
     }
@@ -80,8 +78,21 @@ export const validateLogin = async (req: Request, res: Response, next: NextFunct
         return
     }
 
+    const {email, password} = matchedData(req);
+
+    const user = await User.findOne({email})
+    if(!user) {
+        res.status(401).json({message: "Invalid Credentials"})
+        return
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+    if(!isPasswordValid) {
+        res.status(401).json({message: "Invalid Credentials"})
+        return
+    }
+
     try {
-        const {email, password} = matchedData(req);
         const authHeader = req.headers['authorization'];
         const accessToken = authHeader && authHeader.split(' ')[1];
 
@@ -92,18 +103,6 @@ export const validateLogin = async (req: Request, res: Response, next: NextFunct
                     return
                 }
             })
-        }
-
-        const user = await User.findOne({email})
-        if(!user) {
-            res.status(401).json({message: "Invalid Credentials"})
-            return
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password)
-        if(!isPasswordValid) {
-            res.status(401).json({message: "Invalid Credentials"})
-            return
         }
         res.locals.user = user;
         next()

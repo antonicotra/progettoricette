@@ -66,10 +66,10 @@ export class RecipesboxComponent {
     
     this.recipesService.getRecipesFiltered(Number(this.currentPage()), name).subscribe({
       next: (newRecipes) => {
-        if (newRecipes.length === 0) {
+        if (newRecipes.recipes.length === 0) {
           this.hasMoreData.set(false);
         } else {
-          this.recipes.update(recipes => [...recipes, ...newRecipes]);
+          this.recipes.update(recipes => [...recipes, ...newRecipes.recipes]);
           this.currentPage.update(page => page + 1);
         }
         this.isLoading.set(false);
@@ -84,10 +84,10 @@ export class RecipesboxComponent {
     
     this.recipesService.getRecipes(Number(this.currentPage()), category).subscribe({
       next: (newRecipes) => {
-        if (newRecipes.length === 0) {
+        if (newRecipes.recipes.length === 0) {
           this.hasMoreData.set(false);
         } else {
-          this.recipes.update(recipes => [...recipes, ...newRecipes]);
+          this.recipes.update(recipes => [...recipes, ...newRecipes.recipes]);
           this.currentPage.update(page => page + 1);
         }
         this.isLoading.set(false);

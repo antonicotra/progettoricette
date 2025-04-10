@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { User } from '../models/User';
-import jwt from 'jsonwebtoken'
 import { verifyRefreshToken, createAccessToken, createRefreshToken } from '../utils/auth';
 
 export const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
@@ -8,7 +7,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     const authHeader = req.headers['authorization'];
     const accessToken = authHeader && authHeader.split(' ')[1];
     const refreshToken = req.cookies['refreshToken'];
-
+    
     if (!accessToken) {
         res.status(401).json({ message: 'Access Token Required!' });
         return
@@ -45,7 +44,9 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
 
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
-            sameSite: 'strict',
+            sameSite: 'lax',
+            secure: false, //IMPOSARE SU TRUE IN PRODUZIONE
+            path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
         res.locals.accessToken = newAccessToken

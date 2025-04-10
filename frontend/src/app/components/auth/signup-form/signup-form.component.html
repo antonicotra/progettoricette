@@ -1,0 +1,76 @@
+<form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="w-[400px] mx-auto px-4 py-2">
+    <div class="flex flex-col">
+        <label for="username" class="text-sm font-medium leading-none">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          formControlName="username" 
+          [ngClass]="{'border-red-500': signupForm.get('username')?.invalid && signupForm.get('username')?.touched}"
+          class="h-10 my-1 px-2 py-2 w-full rounded-md border-2 border-gray-300 focus:border-black focus:outline-none text-sm font-medium transition duration-300" 
+          placeholder="stevejobs">
+          @if (signupForm.get('username')?.invalid && signupForm.get('username')?.touched) {
+            <div class="text-red-500 text-xs mb-2">
+                @if (signupForm.get('username')?.errors?.['required']) {
+                    <p>Username is required</p>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="flex flex-col">
+        <label for="email" class="text-sm font-medium leading-none">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email"
+          [ngClass]="{'border-red-500': signupForm.get('email')?.invalid && signupForm.get('email')?.touched}"
+          class="h-10 my-1 px-2 py-2 w-full rounded-md border-2 border-gray-300 focus:border-black focus:outline-none text-sm font-medium transition duration-300" 
+          placeholder="your.email@example.com">
+          @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
+            <div class="text-red-500 text-xs mb-2">
+                @if (signupForm.get('email')?.errors?.['required']) {
+                    <p>Email is required</p>
+                }
+                @if (signupForm.get('email')?.errors?.['email']) {
+                    <p>Enter a valid email address</p>
+                }
+            </div>
+        }
+    </div>
+    <div class="flex flex-col">
+        <label for="password" class="text-sm font-medium leading-none">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          [ngClass]="{'border-red-500': signupForm.get('password')?.invalid && signupForm.get('password')?.touched}"
+          class="h-10 my-1 px-2 py-2 w-full rounded-md border-2 border-gray-300 focus:border-black focus:outline-none text-sm font-medium transition duration-300" 
+          placeholder="••••••••">
+          @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
+            <div class="text-red-500 text-xs">
+                @if (signupForm.get('password')?.errors?.['required']) {
+                    <p>Password is required</p>
+                }
+            </div>
+        }
+    </div>
+
+    <button class="bg-black text-white text-sm font-medium h-10 mt-4 px-4 py-2 w-full rounded-md inline-flex items-center justify-center whitespace-nowrap">Register</button>
+
+    @if (signupError || signupMessage) {
+        <div [ngClass]="signupError ? 'bg-red-100 border-red-400' : 'bg-green-100 border-green-400'" 
+             class="border px-4 py-3 mt-4 rounded flex justify-between items-center" role="alert">
+          <span [ngClass]="signupError ? 'text-red-700' : 'text-green-700'" class="font-semibold">
+            {{ signupError || signupMessage }}
+          </span>
+          <button type="button" 
+                  [ngClass]="signupError ? 'text-red-500 hover:text-red-700' : 'text-green-500 hover:text-green-700'" 
+                  class="ml-4 focus:outline-none" 
+                  (click)="clearMessage()">
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      }
+</form>

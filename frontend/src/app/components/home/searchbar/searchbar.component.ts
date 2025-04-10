@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { RecipeService } from '../../../services/recipe.service';
-import { CategorySelectedService } from '../../../services/categoryselected.service';
 
 @Component({
   selector: 'app-searchbar',
