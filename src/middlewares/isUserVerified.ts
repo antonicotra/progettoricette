@@ -6,7 +6,7 @@ export const isUserVerified = async (req: Request, res: Response, next: NextFunc
     const user: userType = res.locals.user
 
     if(!user.emailActive) {
-        res.status(200).json({message: "It is necessary to verify your email."})
+        res.status(401).json({message: "It is necessary to verify your email."})
         return
     }
     next()

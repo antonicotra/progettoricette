@@ -5,6 +5,7 @@ import { NotfoundComponent } from './components/shared/notfound/notfound.compone
 import { AuthComponent } from './components/auth/auth.component';
 import { NoheaderLayoutComponent } from './layouts/noheader-layout/noheader-layout.component';
 import { HeaderLayoutComponent } from './layouts/header-layout/header-layout.component';
+import { authGuard, nonAuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     {
@@ -18,7 +19,8 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: AuthComponent
+                component: AuthComponent,
+                canActivate: [nonAuthGuard]
             }
         ]
     },
@@ -28,11 +30,13 @@ export const routes: Routes = [
         children: [
             {
                 path: 'homepage',
-                component: HomeComponent
+                component: HomeComponent,
+                canActivate: [authGuard]
             },
             {
                 path: 'detail',
-                component: RecipeDetailsComponent
+                component: RecipeDetailsComponent,
+                canActivate: [authGuard]
             },
             {
                 path: '**',

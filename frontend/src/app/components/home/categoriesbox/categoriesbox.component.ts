@@ -19,6 +19,7 @@ export class CategoriesboxComponent {
   private readonly categoryselectedService = inject(CategorySelectedService);
   public categories: Category[] = []
   public isLoading: boolean = true
+  public errorMessage = ""
 
   constructor() {
     effect(() => {
@@ -34,19 +35,26 @@ export class CategoriesboxComponent {
   }
 
   public ngOnInit(): void {
-    this.categoriesService.getCategories().subscribe((response: {accessToken: string, categories: Category[]}) => {
-      this.categories = response.categories
-      if(this.recipeService.nameMeal() == "") {
-        const savedCategory = this.categoryselectedService.selectedCategory();
-        const activeCategory = response.categories.find(cat => cat.categoryName === savedCategory);
-        if (activeCategory) {
-          activeCategory.isActive = true;
-        } else if (response.categories.length > 0) {
-          response.categories[0].isActive = true;
-          this.categoryselectedService.setSelectedCategory(savedCategory);
+    this.categoriesService.getCategories().subscribe({
+      
+      next: (response: {accessToken: string, categories: Category[]}) => {
+        this.categories = response.categories!
+        if(this.recipeService.nameMeal() == "") {
+          const savedCategory = this.categoryselectedService.selectedCategory();
+          const activeCategory = response.categories!.find(cat => cat.categoryName === savedCategory);
+          if (activeCategory) {
+            activeCategory.isActive = true;
+          } else if (response.categories!.length > 0) {
+            response.categories![0].isActive = true;
+            this.categoryselectedService.setSelectedCategory(savedCategory);
+          }
         }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = error.error.message
+        this.isLoading = false
       }
-      this.isLoading = false;
     })
   }
 

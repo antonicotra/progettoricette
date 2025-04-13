@@ -18,6 +18,7 @@ export class RecipesboxComponent {
   public currentPage = signal(0);
   public isLoading = signal(false);
   public hasMoreData = signal(true);
+  public errorMessage = ""
 
   constructor() {
     if(!this.recipesService.nameMeal()) {
@@ -73,6 +74,10 @@ export class RecipesboxComponent {
           this.currentPage.update(page => page + 1);
         }
         this.isLoading.set(false);
+      },
+      error: (error) => {
+        this.errorMessage = error.error.message
+        this.isLoading.set(false)
       }
     });
   }
@@ -91,6 +96,10 @@ export class RecipesboxComponent {
           this.currentPage.update(page => page + 1);
         }
         this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.errorMessage = err.error.message
+        this.isLoading.set(false)
       }
     });
   }

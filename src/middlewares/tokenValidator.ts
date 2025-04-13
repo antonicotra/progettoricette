@@ -17,7 +17,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
         const token = verifyRefreshToken(refreshToken)
         const user = await User.findById(token.userId)
         if(!user){
-            res.status(403).json({ message: "Invalid refresh token" });
+            res.status(403).json({message: "Invalid refresh token"});
             return
         }
         const newAccessToken = await createAccessToken({ userId: String(user._id), username: user.username })

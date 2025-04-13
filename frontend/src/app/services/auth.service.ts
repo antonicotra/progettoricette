@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from "@angular/common/http"
-import { catchError, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http"
+import { catchError, map, of, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +40,24 @@ export class AuthService {
 
         return throwError(() => ({ message: errorMessage }));
       })
+    );
+  }
+
+  public isAuthenticated() {
+    if (!localStorage.getItem('accessToken')) {
+      return of(false);
+    }
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+    
+    return this.http.get<{accessToken: string}>("http://localhost:3000/auth/me", {
+      headers, 
+      withCredentials: true
+    }).pipe(
+      map(() => true),
+      catchError(() => of(false))
     );
   }
 

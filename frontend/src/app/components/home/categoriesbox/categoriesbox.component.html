@@ -1,15 +1,21 @@
 <div class="mt-8 overflow-x-auto pb-2">
+
     @if (isLoading) {
         <div class="flex justify-center items-center p-4 w-full">
             <div class="w-12 h-12 border-2 border-black border-t-white rounded-full animate-spin"></div>
         </div>
     } @else {
         <div class="flex justify-center space-x-3 min-w-max">
-            @for (category of categories; track category._id) {
-                <app-categorybutton [category]="category" (click) ="onClick(category)"></app-categorybutton>
-            } @empty {
-                <span class="text-center p-4">No category available.</span>
+            @if(errorMessage) {
+                <span class="text-center text-gray-500 font-bold p-4">{{errorMessage}}</span>
+            } @else {
+                @for (category of categories; track category._id) {
+                    <app-categorybutton [category]="category" (click) ="onClick(category)"></app-categorybutton>
+                } @empty {
+                    <span class="text-center text-gray-500 font-bold">No category available.</span>
+                }
             }
+
         </div>
     }
 </div>

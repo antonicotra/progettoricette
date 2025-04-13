@@ -4,7 +4,7 @@ import { User, userType } from '../models/User';
 import { sendResetEmail, sendVerificationEmail } from '../services/emailServices';
 import { HydratedDocument } from 'mongoose';
 import 'dotenv/config'
-import { createAccessToken, createRefreshToken, createValidateToken, hashPassword } from '../utils/auth';
+import { createAccessToken, createRefreshToken, createValidateToken, hashPassword, verifyAccessToken } from '../utils/auth';
 import { body, matchedData, query, validationResult } from 'express-validator';
 
 const router = Router();
@@ -101,6 +101,26 @@ router.post("/reset-password", async (req, res) => {
     //VERIFICO CHE IL JWT E' ANCORA VALIDO
 
 
+})
+
+router.get("/me", async (req,res) => {
+
+    //DIVIDERE IN MIDDLEWARE
+    try {
+        const authHeader = req.headers['authorization'];
+        const accessToken = authHeader && authHeader.split(' ')[1];
+
+        if (!accessToken) {
+        res.status(401).json({message: "Access token not provided" });
+        return
+        }
+
+        const user = verifyAccessToken(accessToken);
+
+        res.status(200).json({user})
+    } catch(error) {
+        res.status(401).json({message: error})
+    }
 })
 
 

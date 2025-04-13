@@ -1,6 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Observable } from "rxjs";
 import { Recipe } from '../models/recipe.model';
 
 @Injectable({
