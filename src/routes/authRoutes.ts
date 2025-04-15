@@ -123,6 +123,27 @@ router.get("/me", async (req,res) => {
     }
 })
 
+router.post("/logout", async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (refreshToken) {
+        const user = await User.findOneAndUpdate({refreshToken: refreshToken},{ $unset: { refreshToken: 1 } },{ new: true });
+
+        res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'lax', secure: false});
+
+        if (user) {
+            res.status(200).json({ message: "Logout successful!" });
+            return
+        } else {
+            res.status(404).json({ message: "User not found!" });
+            return
+        }
+    } else {
+        res.status(400).json({ message: "Refresh token missing!" });
+        return 
+    }
+});
+
 
 
 export default router;

@@ -43,15 +43,42 @@ export class AuthService {
     );
   }
 
+  public logout() {
+    return this.http.post<{message: string}>('http://localhost:3000/auth/logout', {}, { withCredentials: true })
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+          let errorMessage: string
+          if (error) {
+            errorMessage = error.error.message;
+          }
+          return throwError(() => ({ message: errorMessage }));
+      })
+    );
+  }
+
+  public verifyEmail(verifyToken: string) {
+
+    return this.http.get<{message: string}>(`http://localhost:3000/auth/verify-email?token=${verifyToken}`)
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+          let errorMessage: string
+          if (error) {
+            errorMessage = error.error.message;
+          }
+          return throwError(() => ({ message: errorMessage }));
+      })
+    );
+  }
+
   public isAuthenticated() {
     if (!localStorage.getItem('accessToken')) {
       return of(false);
     }
-  
+    
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
-    
+      
     return this.http.get<{accessToken: string}>("http://localhost:3000/auth/me", {
       headers, 
       withCredentials: true
@@ -59,6 +86,19 @@ export class AuthService {
       map(() => true),
       catchError(() => of(false))
     );
+  }
+
+  public sendResetPassword(email: string) {
+    return this.http.post<{message: string}>("http://localhost:3000/auth/send-reset-email", email)
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+          let errorMessage: string
+          if (error) {
+            errorMessage = error.error[0].message;
+          }
+          return throwError(() => ({ message: errorMessage }));
+      })
+    )
   }
 
 }

@@ -52,7 +52,8 @@ export const validateEmail = async (req: Request, res: Response, next: NextFunct
         if(user.emailActive) throw new Error('Email already verified')
         res.locals.user = user;
     } catch(err) {
-        res.status(401).json({message: err})
+        console.log(err)
+        res.status(401).json({message: err instanceof Error ? err.message : err})
         return
     }
 

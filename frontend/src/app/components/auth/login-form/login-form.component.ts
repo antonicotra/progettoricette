@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
+import { ModalService } from '../../../services/modal.service';
 
 @Component({
   selector: 'app-login-form',
@@ -16,6 +17,7 @@ export class LoginFormComponent {
   loginError: string = '';
 
   private readonly authService = inject(AuthService)
+  private readonly modalService = inject(ModalService);
 
   constructor(
     private fb: FormBuilder, 
@@ -47,5 +49,10 @@ export class LoginFormComponent {
 
   clearError() {
     this.loginError = "";
+  }
+
+  openResetPasswordModal(event: Event) {
+    event.preventDefault();
+    this.modalService.openResetPasswordModal();
   }
 }

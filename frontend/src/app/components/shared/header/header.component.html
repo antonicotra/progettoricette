@@ -1,13 +1,29 @@
 <header class="sticky top-0 z-10 bg-white shadow-sm">
     <div class="flex justify-between p-4">
-        <div class="flex items-center gap-2">
-            <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-                <img src="assets/images/chef-hat.svg" alt="logo-app" [routerLink]="['/homepage']">
-            </button>
-            <h1 class="text-xl font-semibold text-gray-800">RecipeApp</h1>
-        </div>
+      <div class="flex items-center gap-2">
         <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-            <img src="assets/images/user.svg" alt="" class="">
+          <img src="assets/images/chef-hat.svg" alt="logo-app" [routerLink]="['/homepage']" />
         </button>
+        <h1 class="text-xl font-semibold text-gray-800">RecipeApp</h1>
+      </div>
+      <div class="relative">
+        <button class="p-2 rounded-full hover:bg-gray-100 transition-colors" (click)="toggleDropdown()" aria-label="User menu" type="button">
+          <img src="assets/images/user.svg" alt="user"/>
+        </button>
+  
+        @if (dropdownOpen) {
+          <div class="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg z-20">
+            <button class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100" (click)="logout(); closeDropdown()">
+              Logout
+            </button>
+          </div>
+          <div class="fixed inset-0 z-10" (click)="closeDropdown()" style="background: transparent;"></div>
+        }
+      </div>
     </div>
-</header>
+  </header>
+  @if (logoutMessage) {
+    <div class="text-red-600 font-semibold text-sm text-center mt-2">
+      {{ logoutMessage }}
+    </div>
+  }

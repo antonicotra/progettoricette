@@ -1,24 +1,28 @@
-    <div class="bg-white flex-col justify-items-center px-6 py-6 max-w-xl mx-auto">
-      <div class="flex-col">
-        <h1 class="text-2xl font-bold text-balance text-center">Welcome to RecipeApp</h1>
-        <p class="text-gray-600 mt-3 text-pretty text-center">Sign in your account or create a new one</p>
-      </div>
-      <div class="flex justify-around rounded-md p-1 my-3 h-10 w-full max-w-[370px] bg-gray-100">
-        <button 
-          (click)="toggleForm('login')" 
-          [class]="showLoginForm ? 'bg-white w-full font-medium text-sm' : 'w-full font-medium text-sm'">
-          Login
-        </button>
-        <button 
-          (click)="toggleForm('signup')" 
-          [class]="!showLoginForm ? 'bg-white w-full font-medium text-sm' : 'w-full font-medium text-sm'">
-          Register
-        </button>
-      </div>
+<div class="bg-white flex-col justify-items-center px-6 py-6 max-w-xl mx-auto">
+  <div class="flex-col">
+    <h1 class="text-2xl font-bold text-balance text-center">Welcome to RecipeApp</h1>
+    <p class="text-gray-600 mt-3 text-pretty text-center">Sign in your account or create a new one</p>
+  </div>
+  <div class="flex justify-around rounded-md p-1 my-3 h-10 w-full max-w-[370px] bg-gray-100">
+    <button 
+      (click)="toggleForm('login')" 
+      [class]="showLoginForm ? 'bg-white w-full font-medium text-sm' : 'w-full font-medium text-sm'">
+      Login
+    </button>
+    <button 
+      (click)="toggleForm('signup')" 
+      [class]="!showLoginForm ? 'bg-white w-full font-medium text-sm' : 'w-full font-medium text-sm'">
+      Register
+    </button>
+  </div>
       
-      @if (showLoginForm) {
-        <app-login-form></app-login-form>
-      } @else {
-        <app-signup-form></app-signup-form>
-      }
-    </div>
+  @if (showLoginForm) {
+    <app-login-form></app-login-form>
+  } @else {
+    <app-signup-form></app-signup-form>
+  }
+  
+  @if (modalService.showResetPasswordModal()) {
+    <app-reset-password-modal></app-reset-password-modal>
+  }
+</div>
