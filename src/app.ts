@@ -15,8 +15,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
     origin: [
-      'https://antun-recipeapp.netlify.app', // dominio produzione
-      'https://680016c88294d6300ef2dac1--antun-recipeapp.netlify.app' // preview deploy
+      'https://antun-recipeapp.netlify.app',
+      'https://680016c88294d6300ef2dac1--antun-recipeapp.netlify.app'
     ],
     credentials: true
   }));
