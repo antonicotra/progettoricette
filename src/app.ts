@@ -13,7 +13,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({origin: 'http://localhost:4200', credentials: true}));
+app.use(cors({origin: 'https://680016c88294d6300ef2dac1--antun-recipeapp.netlify.app', credentials: true}));
 app.use('/auth', authRoutes);
 app.use('/recipes', recipeRoutes);
 app.use('/categories', categoryRoutes);
