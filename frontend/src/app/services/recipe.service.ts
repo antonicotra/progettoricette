@@ -8,7 +8,7 @@ import { Recipe } from '../models/recipe.model';
 
 export class RecipeService {
   private readonly http: HttpClient = inject(HttpClient);
-  private baseUrl = "http://localhost:3000/recipes";
+  private baseUrl = "https://progettoricette-production.up.railway.app/recipes";
   private recipesPerPage = "3";
   private nameMealSignal = signal<string>(
       localStorage.getItem('name') || ""

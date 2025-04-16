@@ -11,7 +11,7 @@ export class AuthService {
   private readonly http: HttpClient = inject(HttpClient)
 
   public login(email: string, password: string) {
-    return this.http.post<{accessToken: string}>("http://localhost:3000/auth/login", {email, password}, {withCredentials: true})
+    return this.http.post<{accessToken: string}>("https://progettoricette-production.up.railway.app/auth/login", {email, password}, {withCredentials: true})
     .pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage: string;
@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   public signup(email: string, password: string, username: string) {
-    return this.http.post<{id: string, username: string, email: string}>("http://localhost:3000/auth/signup", {email, password, username})
+    return this.http.post<{id: string, username: string, email: string}>("https://progettoricette-production.up.railway.app/auth/signup", {email, password, username})
     .pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage: string;
@@ -44,7 +44,7 @@ export class AuthService {
   }
 
   public logout() {
-    return this.http.post<{message: string}>('http://localhost:3000/auth/logout', {}, { withCredentials: true })
+    return this.http.post<{message: string}>('https://progettoricette-production.up.railway.app/auth/logout', {}, { withCredentials: true })
     .pipe(
       catchError((error: HttpErrorResponse) => {
           let errorMessage: string
@@ -58,7 +58,7 @@ export class AuthService {
 
   public verifyEmail(verifyToken: string) {
 
-    return this.http.get<{message: string}>(`http://localhost:3000/auth/verify-email?token=${verifyToken}`)
+    return this.http.get<{message: string}>(`https://progettoricette-production.up.railway.app/auth/verify-email?token=${verifyToken}`)
     .pipe(
       catchError((error: HttpErrorResponse) => {
           let errorMessage: string
@@ -79,7 +79,7 @@ export class AuthService {
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
       
-    return this.http.get<{accessToken: string}>("http://localhost:3000/auth/me", {
+    return this.http.get<{accessToken: string}>("https://progettoricette-production.up.railway.app/auth/me", {
       headers, 
       withCredentials: true
     }).pipe(
@@ -89,7 +89,7 @@ export class AuthService {
   }
 
   public sendResetPassword(email: string) {
-    return this.http.post<{message: string}>("http://localhost:3000/auth/send-reset-email", email)
+    return this.http.post<{message: string}>("https://progettoricette-production.up.railway.app/auth/send-reset-email", email)
     .pipe(
       catchError((error: HttpErrorResponse) => {
           let errorMessage: string

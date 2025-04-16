@@ -50,7 +50,7 @@ router.post("/login", validateLogin, async (_, res) => {
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'lax',
-        secure: false, //IMPOSARE SU TRUE IN PRODUZIONE
+        secure: true,
         path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
@@ -129,7 +129,7 @@ router.post("/logout", async (req, res) => {
     if (refreshToken) {
         const user = await User.findOneAndUpdate({refreshToken: refreshToken},{ $unset: { refreshToken: 1 } },{ new: true });
 
-        res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'lax', secure: false});
+        res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'lax', secure: true});
 
         if (user) {
             res.status(200).json({ message: "Logout successful!" });

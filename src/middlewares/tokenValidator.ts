@@ -45,7 +45,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
             sameSite: 'lax',
-            secure: false, //IMPOSARE SU TRUE IN PRODUZIONE
+            secure: true,
             path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });

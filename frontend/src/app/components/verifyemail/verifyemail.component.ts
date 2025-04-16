@@ -28,7 +28,6 @@ export class VerifyemailComponent {
         },
         error: (error) => {
           this.success = false;
-          console.log(error)
           this.statusMessage = error.message || 'Verification failed. Please try again.';
         }
       });
