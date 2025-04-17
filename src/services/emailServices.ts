@@ -21,12 +21,12 @@ export async function sendVerificationEmail(to: string, username: string, valida
                     <h2>Ciao ${username}!</h2>
                     <p>Grazie per esserti registrato a Progetto Ricette. Per completare la registrazione, verifica il tuo indirizzo email cliccando sul link qui sotto:</p>
                     <p>
-                        <a href="https://680016c88294d6300ef2dac1--antun-recipeapp.netlify.app/auth/verify-email?token=${validateEmailToken}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+                        <a href="https://antun-recipeapp.netlify.app/auth/verify-email?token=${validateEmailToken}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
                             Verifica Email
                         </a>
                     </p>
                     <p>Se non riesci a cliccare sul pulsante, copia e incolla questo link nel tuo browser:</p>
-                    <p>https://680016c88294d6300ef2dac1--antun-recipeapp.netlify.app/auth/verify-email?token=${validateEmailToken}</p>
+                    <p>https://antun-recipeapp.netlify.app/auth/verify-email?token=${validateEmailToken}</p>
                     <p>Se non hai richiesto questa email, ignorala semplicemente.</p>
                     <p>Grazie,<br>Il team di Progetto Ricette</p>
                 </div>
