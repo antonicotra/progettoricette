@@ -20,10 +20,6 @@ export class RecipesboxComponent {
   public hasMoreData = signal(true);
   public errorMessage = ""
 
-  ngAfterViewInit() {
-    this.tryFillScreen();
-  }
-
 
   constructor() {
     if(!this.recipesService.nameMeal()) {
@@ -128,17 +124,6 @@ export class RecipesboxComponent {
     if (windowHeight + scrollTop >= documentHeight - 100) {
       this.loadRecipes();
     }
-  }
-
-  private tryFillScreen() {
-    setTimeout(() => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      if (documentHeight <= windowHeight && this.hasMoreData()) {
-        this.loadRecipes();
-        this.tryFillScreen();
-      }
-    }, 100);
   }
 
 
