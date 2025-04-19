@@ -1,9 +1,10 @@
-# 🍝 ProgettoRicette
+# 🍝 RecipeApp
 
 **Access the application here:**  
 [https://antun-recipeapp.netlify.app](https://antun-recipeapp.netlify.app)
 
-A web application for browsing and viewing recipes, with authentication, search, and category filters.
+A web application for browsing and viewing recipes, with authentication, search, and category filters.  
+This project was built as a personal learning exercise to explore Angular and TypeScript.
 
 ## Backend Technologies Used
 
