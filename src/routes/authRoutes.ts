@@ -39,7 +39,7 @@ router.get("/verify-email", validateEmail, async (_, res) => {
     }
 })
 
-router.post("/login", validateLogin, async (_, res) => {
+router.post("/login", validateLogin, async (req, res) => {
     const user: HydratedDocument<userType> = res.locals.user
     const accessToken = await createAccessToken({userId: String(user._id), username: user.username})
     const refreshToken = await createRefreshToken({userId: String(user._id), username: user.username})
@@ -47,9 +47,14 @@ router.post("/login", validateLogin, async (_, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
+    res.set({
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Origin': req.headers.origin || 'https://antun-recipeapp.netlify.app'
+    });
+
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'none',
         secure: true,
         path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000,

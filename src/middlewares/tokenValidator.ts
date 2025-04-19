@@ -42,13 +42,17 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
         user.refreshToken = newRefreshToken;
         await user.save();
 
+        res.set({
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Origin': req.headers.origin || 'https://antun-recipeapp.netlify.app'
+        });
+        
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
-            sameSite: 'lax',
+            sameSite: 'none',
             secure: true,
             path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            domain: "antun-recipeapp.netlify.app"
         });
         res.locals.accessToken = newAccessToken
         res.locals.user = user
