@@ -45,12 +45,12 @@ export async function sendResetEmail(to: string, username: string, resetPassword
                     <h2>Ciao ${username}!</h2>
                     <p>Hai richiesto il reset della password per il tuo account su Progetto Ricette. Per procedere, clicca sul link qui sotto:</p>
                     <p>
-                        <a href="https://progettoricette-production.up.railway.app/auth/reset-password?resetToken=${resetPasswordToken}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+                        <a href="https://antun-recipeapp.netlify.app/auth/change-password?resetToken=${resetPasswordToken}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
                             Reset Password
                         </a>
                     </p>
                     <p>Se non riesci a cliccare sul pulsante, copia e incolla questo link nel tuo browser:</p>
-                    <p>https://progettoricette-production.up.railway.app/auth/reset-password?resetToken=${resetPasswordToken}</p>
+                    <p>https://antun-recipeapp.netlify.app/auth/change-password?resetToken=${resetPasswordToken}</p>
                     <p>Il link è valido per 1 ora. Se non hai richiesto il reset della password, puoi ignorare questa email.</p>
                     <p>Grazie,<br>Il team di Progetto Ricette</p>
                 </div>
