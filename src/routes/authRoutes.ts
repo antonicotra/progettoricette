@@ -47,18 +47,12 @@ router.post("/login", validateLogin, async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    res.set({
-        'Access-Control-Allow-Credentials': 'true',
-        'Access-Control-Allow-Origin': req.headers.origin || 'https://antun-recipeapp.netlify.app'
-    });
-
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
         secure: true,
         path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000,
-        domain: "antun-recipeapp.netlify.app"
     });
 
     res.status(200).send({accessToken})
