@@ -52,7 +52,8 @@ router.post("/login", validateLogin, async (_, res) => {
         sameSite: 'none',
         secure: true,
         path: '/',
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        domain: "https://antun-recipeapp.netlify.app"
     });
 
     res.status(200).send({accessToken})

@@ -5,20 +5,14 @@ import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { jwtDecode } from "jwt-decode";
 
-interface MyTokenPayload {
-  username?: string;
-  // altri campi possibili
-}
-
 @Component({
   selector: 'app-change-password',
-  standalone: true, // Aggiungi questa proprietà se il componente è standalone
   imports: [FormsModule, ReactiveFormsModule, CommonModule],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.css'
 })
 
-export class ChangePasswordComponent implements OnInit {  // Implementa OnInit
+export class ChangePasswordComponent {
 
   changePasswordForm: FormGroup;
   public responseForm = ""
@@ -43,27 +37,22 @@ export class ChangePasswordComponent implements OnInit {  // Implementa OnInit
     
     if (this.token) {
       try {
-        // Decodifica il token per estrarre lo username
-        const decodedToken = jwtDecode<MyTokenPayload>(this.token);
+        const decodedToken: {username: string} = jwtDecode(this.token);
         
         if (decodedToken && decodedToken.username) {
           this.username = decodedToken.username;
-          console.log('Username estratto dal token:', this.username);
           
-          // Verifica il token SOTTOSCRIVENDOTI all'Observable
           this.verifyToken();
         } else {
-          console.error('Username non trovato nel token');
-          this.responseError = "Token non valido: username mancante";
+          this.responseError = "Invalid token: username missing";
           this.isLoading = false;
         }
       } catch (error) {
-        console.error('Errore durante la decodifica del token:', error);
-        this.responseError = "Errore nella lettura del token";
+        this.responseError = "Error reading token";
         this.isLoading = false;
       }
     } else {
-      this.responseError = "Token mancante. Impossibile reimpostare la password.";
+      this.responseError = "Token missing. Unable to reset password.";
       this.isLoading = false;
     }
   }
@@ -75,21 +64,21 @@ export class ChangePasswordComponent implements OnInit {  // Implementa OnInit
         this.isLoading = false;
         
         if (!isValid) {
-          this.responseError = "Il token per il reset della password non è valido o è scaduto.";
+          this.responseError = "Password reset token is invalid or expired.";
         }
       },
       error: (error) => {
-        console.error('Errore durante la verifica del token:', error);
+        console.error('Error while verifying token:', error);
         this.isValidToken = false;
         this.isLoading = false;
-        this.responseError = "Errore durante la verifica del token. Riprova più tardi.";
+        this.responseError = "Error while verifying token. Please try again later.";
       }
     });
   }
 
   onSubmit(): void {
     if (this.changePasswordForm.valid) {
-      const password = this.changePasswordForm.value.password; // Accedi direttamente alla proprietà password
+      const password = this.changePasswordForm.value.password;
       
       this.authService.changePassword(this.username, password).subscribe({
         next: (response) => {
@@ -97,7 +86,7 @@ export class ChangePasswordComponent implements OnInit {  // Implementa OnInit
           this.isValidToken = false;
         },
         error: (error) => {
-          this.responseError = error.error?.message || error.message || "Errore durante l'aggiornamento della password";
+          this.responseError = error.error?.message || error.message || "Error while updating password";
         }
       });
     }

@@ -47,7 +47,8 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
             sameSite: 'none',
             secure: true,
             path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            domain: "https://antun-recipeapp.netlify.app"
         });
         res.locals.accessToken = newAccessToken
         res.locals.user = user
