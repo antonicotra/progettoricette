@@ -56,6 +56,17 @@ export class AuthService {
     );
   }
 
+  public verifyToken(verifyToken: string) {
+    return this.http.get<boolean>(
+      `https://progettoricette-production.up.railway.app/auth/verify-reset-token?resetToken=${verifyToken}`
+    ).pipe(
+      catchError(error => {
+        console.error('Errore durante la verifica del token', error);
+        return of(false);
+      })
+    );
+  }
+
   public verifyEmail(verifyToken: string) {
 
     return this.http.get<{message: string}>(`https://progettoricette-production.up.railway.app/auth/verify-email?token=${verifyToken}`)
@@ -99,6 +110,20 @@ export class AuthService {
           return throwError(() => ({ message: errorMessage }));
       })
     )
+  }
+
+  public changePassword(username: string, password: string) {
+    return this.http.post<{message: string}>(`https://progettoricette-production.up.railway.app/auth/change-password?username=${username}`,{password})
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage: string;
+
+        if (error.error) {
+          errorMessage = error.error.message;
+        }
+        return throwError(() => ({ message: errorMessage }));
+      })
+    ); 
   }
 
 }

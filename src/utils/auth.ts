@@ -23,3 +23,9 @@ export const verifyAccessToken = (accessToken: string): UserPayload => {
     throw new Error(token)
 } 
 
+export const verifyValidateToken = (validateToken: string): UserPayload => {
+    const token = jwt.verify(validateToken, process.env.JWT_VERIFY_KEY!)
+    if(typeof token == 'object') return token as UserPayload
+    throw new Error(token)
+} 
+

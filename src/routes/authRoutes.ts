@@ -4,12 +4,12 @@ import { User, userType } from '../models/User';
 import { sendResetEmail, sendVerificationEmail } from '../services/emailServices';
 import { HydratedDocument } from 'mongoose';
 import 'dotenv/config'
-import { createAccessToken, createRefreshToken, createValidateToken, hashPassword, verifyAccessToken } from '../utils/auth';
+import { createAccessToken, createRefreshToken, createValidateToken, hashPassword, verifyAccessToken, verifyValidateToken } from '../utils/auth';
 import { body, matchedData, query, validationResult } from 'express-validator';
 
 const router = Router();
 
-//LE LOGICHE BISOGNA SPOSTARLE SUI CONTROLLER
+//LE LOGICHE BISOGNA SPOSTARLE SUI CONTROLLE
 router.post("/signup",validateSignup, async (req, res) => {
     try {
         const {email, password, username} = req.body
@@ -84,9 +84,8 @@ router.post("/send-reset-email", async (req, res) => {
 
 })
 
-router.post("/reset-password", async (req, res) => {
+router.get("/verify-reset-token", async (req, res) => {
     
-    //INSERIRE IL CAMPO PASSWORD E CONFERMA PASSWORD CHE MI VERRA' INVIATO TRAMITE BODY
     await query('resetToken')
     .notEmpty().withMessage('Token is required')
     .run(req)
@@ -97,10 +96,51 @@ router.post("/reset-password", async (req, res) => {
         res.status(400).json(errors.array().map(err => ({message: err.msg})))
         return
     }
+    
+    try {
+        const verifyToken = String(req.query.resetToken)
+        verifyValidateToken(verifyToken)
+        res.status(200).send(true)
 
-    //VERIFICO CHE IL JWT E' ANCORA VALIDO
+    } catch {
+        res.status(401).send(false)
+    }
+    
+})
 
+router.post("/change-password", async (req,res) => {
+    
+    if (!req.query.username) {
+        res.status(400).json({ message: 'Username query parameter is required' });
+        return
+    }
 
+    await body('password').notEmpty().withMessage('Password required')
+    .isStrongPassword().withMessage("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character.")
+    .run(req)
+
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()) {
+        res.status(400).json(errors.array().map(err => ({message: err.msg})))
+        return
+    }
+
+        try {
+        const password = String(req.body.password)
+        const username = String(req.query.username)
+        const hashedPassword = await hashPassword(password)
+        const user = await User.findOneAndUpdate(
+            { username: username },
+            { $set: { 
+                password: await hashPassword(password),
+            }},
+            { new: true }
+        );
+        res.status(201).json({message: "Password successfully changed!"}) 
+    } catch(err) {
+        res.status(404).send(err)
+    }
 })
 
 router.get("/me", async (req,res) => {

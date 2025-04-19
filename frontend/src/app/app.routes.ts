@@ -7,6 +7,7 @@ import { NoheaderLayoutComponent } from './layouts/noheader-layout/noheader-layo
 import { HeaderLayoutComponent } from './layouts/header-layout/header-layout.component';
 import { authGuard, nonAuthGuard } from './guards/auth.guard';
 import { VerifyemailComponent } from './components/verifyemail/verifyemail.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 export const routes: Routes = [
     {
@@ -27,6 +28,10 @@ export const routes: Routes = [
                 path: 'verify-email',
                 component: VerifyemailComponent,
                 canActivate: [nonAuthGuard]
+            },
+            {
+                path: 'change-password',
+                component: ChangePasswordComponent,
             }
         ]
     },
