@@ -11,7 +11,7 @@ export class AuthService {
   private readonly http: HttpClient = inject(HttpClient)
 
   public login(email: string, password: string) {
-    return this.http.post<{accessToken: string}>("https://progettoricette-production.up.railway.app/api/auth/login", {email, password}, {withCredentials: true})
+    return this.http.post<{accessToken: string}>("/api/auth/login", {email, password}, {withCredentials: true})
     .pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage: string;
@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   public signup(email: string, password: string, username: string) {
-    return this.http.post<{id: string, username: string, email: string}>("https://progettoricette-production.up.railway.app/api/auth/signup", {email, password, username})
+    return this.http.post<{id: string, username: string, email: string}>("/api/auth/signup", {email, password, username})
     .pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage: string;
@@ -44,7 +44,7 @@ export class AuthService {
   }
 
   public logout() {
-    return this.http.post<{message: string}>('https://progettoricette-production.up.railway.app/api/auth/logout', {}, { withCredentials: true })
+    return this.http.post<{message: string}>('/api/auth/logout', {}, { withCredentials: true })
     .pipe(
       catchError((error: HttpErrorResponse) => {
           let errorMessage: string
@@ -58,7 +58,7 @@ export class AuthService {
 
   public verifyToken(verifyToken: string) {
     return this.http.get<boolean>(
-      `https://progettoricette-production.up.railway.app/api/auth/verify-reset-token?resetToken=${verifyToken}`
+      `/api/auth/verify-reset-token?resetToken=${verifyToken}`
     ).pipe(
       catchError(error => {
         console.error('Errore durante la verifica del token', error);
@@ -69,7 +69,7 @@ export class AuthService {
 
   public verifyEmail(verifyToken: string) {
 
-    return this.http.get<{message: string}>(`https://progettoricette-production.up.railway.app/api/auth/verify-email?token=${verifyToken}`)
+    return this.http.get<{message: string}>(`/api/auth/verify-email?token=${verifyToken}`)
     .pipe(
       catchError((error: HttpErrorResponse) => {
           let errorMessage: string
@@ -90,7 +90,7 @@ export class AuthService {
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
       
-    return this.http.get<{accessToken: string}>("https://progettoricette-production.up.railway.app/api/auth/me", {
+    return this.http.get<{accessToken: string}>("/api/auth/me", {
       headers, 
       withCredentials: true
     }).pipe(
@@ -100,7 +100,7 @@ export class AuthService {
   }
 
   public sendResetPassword(email: string) {
-    return this.http.post<{message: string}>("https://progettoricette-production.up.railway.app/api/auth/send-reset-email", email)
+    return this.http.post<{message: string}>("/api/auth/send-reset-email", email)
     .pipe(
       catchError((error: HttpErrorResponse) => {
           let errorMessage: string
@@ -113,7 +113,7 @@ export class AuthService {
   }
 
   public changePassword(username: string, password: string) {
-    return this.http.post<{message: string}>(`https://progettoricette-production.up.railway.app/api/auth/change-password?username=${username}`,{password})
+    return this.http.post<{message: string}>(`/api/auth/change-password?username=${username}`,{password})
     .pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage: string;

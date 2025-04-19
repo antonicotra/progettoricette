@@ -14,6 +14,6 @@ export class CategoryService {
     
     const headers = new HttpHeaders({'Authorization': `Bearer ${localStorage.getItem('accessToken')}`});
   
-    return this.http.get<{accessToken: string, categories: Category[]}>("https://progettoricette-production.up.railway.app/api/categories", {headers, withCredentials: true});
+    return this.http.get<{accessToken: string, categories: Category[]}>("/api/categories", {headers, withCredentials: true});
   }
 }
