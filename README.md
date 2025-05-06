@@ -6,6 +6,11 @@
 A web application for browsing and viewing recipes, with authentication, search, and category filters.  
 This project was built as a personal learning exercise to explore Angular and TypeScript.
 
+## Video
+
+https://github.com/user-attachments/assets/19a13d00-25ec-4ace-83af-8898a5d1ad05
+
+
 ## Backend Technologies Used
 
 - **Express.js** (REST API)
@@ -30,3 +35,6 @@ This project was built as a personal learning exercise to explore Angular and Ty
 - **Railway** for backend deployment
 - **MongoDB Atlas** for cloud database hosting
 - **Netlify** for frontend deployment
+
+
+
