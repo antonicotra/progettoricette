@@ -33,7 +33,7 @@ export class SignupFormComponent {
       
       this.authService.signup(email, password, username).subscribe({
         next: (response) => {
-          this.signupMessage = "E' stata inviata una mail di conferma a " + response.email
+          this.signupMessage = "A confirmation email has been sent to " + response.email
           this.signupError = ''
           this.signupForm.reset();
         },
