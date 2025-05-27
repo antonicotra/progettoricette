@@ -1,7 +1,12 @@
 # 🍝 RecipeApp
 
+### 💸 No more Railway bills!
+Backend currently not running — hosting has been shut down.  
+
 **Access the application here:**  
-[https://antun-recipeapp.netlify.app](https://antun-recipeapp.netlify.app)
+[https://antun-recipeapp.netlify.app](https://antun-recipeapp.netlify.app)  
+
+
 
 A web application for browsing and viewing recipes, with authentication, search, and category filters.  
 This project was built as a personal learning exercise to explore Angular and TypeScript.
